@@ -1,0 +1,13 @@
+.wrapper {
+    box-shadow: rgba(0, 0, 0, 0.12) 0px 1px 1px;
+    height: 60px;
+    display: flex;
+    justify-content: center;
+    width: 100%;
+}
+
+.content {
+    width: 95%;
+    height: 100%;
+    background-color: red;
+}
