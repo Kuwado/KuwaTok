@@ -1,11 +1,12 @@
 import { useEffect, useState } from 'react';
 import classNames from 'classnames/bind';
 import styles from './Header.module.scss';
-import images from '~/assets/images';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faCircleXmark, faSpinner, faMagnifyingGlass } from '@fortawesome/free-solid-svg-icons';
+import { faCircleXmark, faSpinner, faMagnifyingGlass, faSignIn } from '@fortawesome/free-solid-svg-icons';
 import Tippy from '@tippyjs/react/headless';
-import 'tippy.js/dist/tippy.css';
+
+import Button from '~/components/Button';
+import images from '~/assets/images';
 import { Wrapper as PopperWrapper } from '~/components/Popper/';
 import AccountItem from '../AccountItem';
 
@@ -25,36 +26,43 @@ function Header() {
             <div className={cx('content')}>
                 <img src={images.logo} alt="TikTok" />
 
-                <Tippy
-                    interactive
-                    visible={searchResult.length > 0}
-                    render={(attrs) => (
-                        <div className={cx('search-result')} tabIndex="-1" {...attrs}>
-                            <PopperWrapper>
-                                <h4 className={cx('search-title')}>Accounts</h4>
-                                <AccountItem />
-                                <AccountItem />
-                                <AccountItem />
-                                <AccountItem />
-                            </PopperWrapper>
-                        </div>
-                    )}
-                >
-                    <div className={cx('search')}>
-                        <input placeholder="search accounts and videos" spellCheck="false" />
-                        <div className={cx('search-icon')}>
-                            <button className={cx('clear')}>
-                                <FontAwesomeIcon icon={faCircleXmark} />
+                <div>
+                    <Tippy
+                        interactive
+                        visible={searchResult.length > 0}
+                        render={(attrs) => (
+                            <div className={cx('search-result')} tabIndex="-1" {...attrs}>
+                                <PopperWrapper>
+                                    <h4 className={cx('search-title')}>Accounts</h4>
+                                    <AccountItem />
+                                    <AccountItem />
+                                    <AccountItem />
+                                    <AccountItem />
+                                </PopperWrapper>
+                            </div>
+                        )}
+                    >
+                        <div className={cx('search')}>
+                            <input placeholder="search accounts and videos" spellCheck="false" />
+                            <div className={cx('search-icon')}>
+                                <button className={cx('clear')}>
+                                    <FontAwesomeIcon icon={faCircleXmark} />
+                                </button>
+                                <FontAwesomeIcon className={cx('loading')} icon={faSpinner} />
+                            </div>
+                            <button className={cx('search-btn')}>
+                                <FontAwesomeIcon icon={faMagnifyingGlass} />
                             </button>
-                            <FontAwesomeIcon className={cx('loading')} icon={faSpinner} />
                         </div>
-                        <button className={cx('search-btn')}>
-                            <FontAwesomeIcon icon={faMagnifyingGlass} />
-                        </button>
-                    </div>
-                </Tippy>
+                    </Tippy>
+                </div>
 
-                <div className={cx('action')}></div>
+                <div className={cx('action')}>
+                    <Button text>Upload</Button>
+                    <Button primary rightIcon={<FontAwesomeIcon icon={faSignIn} />}>
+                        Log in
+                    </Button>
+                </div>
             </div>
         </header>
     );
