@@ -8,6 +8,9 @@ import AccountItem from '../../AccountItem';
 import classNames from 'classnames/bind';
 import styles from './Search.module.scss';
 import { useEffect, useRef, useState } from 'react';
+import { useDebounce } from '~/components/hooks';
+import routesConfig from '~/config/routes';
+import * as searchServices from '~/apiServices/searchServices';
 
 const cx = classNames.bind(styles);
 
@@ -17,26 +20,25 @@ function Search() {
     const [showResult, setShowResult] = useState(true);
     const [loading, setLoading] = useState(false);
 
+    const debounced = useDebounce(searchValue, 500);
+
     const inputRef = useRef();
 
     useEffect(() => {
-        if (!searchValue.trim()) {
+        if (!debounced.trim()) {
             setSearchResult([]);
             return;
         }
 
-        setLoading(true);
+        const fetchApi = async () => {
+            setLoading(true);
+            const result = await searchServices.search(debounced);
+            setSearchResult(result);
+            setLoading(false);
+        };
 
-        fetch(`https://tiktok.fullstack.edu.vn/api/users/search?q=${encodeURIComponent(searchValue)}&type=less`)
-            .then((res) => res.json())
-            .then((res) => {
-                setSearchResult(res.data);
-                setLoading(false);
-            })
-            .catch(() => {
-                setLoading(false);
-            });
-    }, [searchValue]);
+        fetchApi();
+    }, [debounced]);
 
     const handleClear = () => {
         setSearchValue('');
@@ -45,6 +47,18 @@ function Search() {
 
     const handleHideResult = () => {
         setShowResult(false);
+    };
+
+    const handleChange = (e) => {
+        const searchInput = e.target.value;
+
+        if (!searchInput.startsWith(' ')) {
+            setSearchValue(searchInput);
+        }
+    };
+
+    const handleSubmit = (e) => {
+        console.log(searchResult);
     };
 
     return (
@@ -70,7 +84,7 @@ function Search() {
                         value={searchValue}
                         placeholder="search accounts and videos"
                         spellCheck="false"
-                        onChange={(e) => setSearchValue(e.target.value)}
+                        onChange={handleChange}
                         onFocus={() => setShowResult(true)}
                     />
                     <div className={cx('search-icon')}>
@@ -82,7 +96,7 @@ function Search() {
 
                         {loading && <FontAwesomeIcon className={cx('loading')} icon={faSpinner} />}
                     </div>
-                    <button className={cx('search-btn')}>
+                    <button className={cx('search-btn')} onClick={handleSubmit} onMouseDown={(e) => e.preventDefault}>
                         <FontAwesomeIcon icon={faMagnifyingGlass} />
                     </button>
                 </div>

@@ -22,6 +22,7 @@ import images from '~/assets/images';
 import Menu from '~/components/Popper/Menu';
 import Image from '~/components/Image';
 import Search from './Search';
+import routesConfig from '~/config/routes';
 
 const cx = classNames.bind(styles);
 
